@@ -48,6 +48,7 @@ public class Task1Activity extends AppCompatActivity {
         setContentView(R.layout.activity_task1);
         ButterKnife.bind(this);
 
+        // TODO: 2016/12/10 to background
         String content = null;
         InputStream inputStream = null;
         try {

@@ -4,9 +4,13 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.view.MotionEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 用于提供计算的工具类
@@ -15,7 +19,7 @@ import java.util.List;
  */
 public class ParagraphMathUtils {
 
-    public static String[] divideToParagraph(String content) {
+    public static String[] divideToParagraph(@NonNull String content) {
         return content.split("\n");
     }
 
@@ -70,12 +74,47 @@ public class ParagraphMathUtils {
         return bounds;
     }
 
-    public static int getLineHeight(Paint paint) {
+    public static int getLineHeight(@NonNull Paint paint) {
         Paint.FontMetrics fontMetrics = paint.getFontMetrics();
         return (int) Math.ceil(fontMetrics.bottom - fontMetrics.top);
     }
 
+    public static String getEnglishWord(@NonNull String content) {
+        Matcher matcher = getEnglishWordMatcher(content);
+        if (matcher.find()) {
+            return matcher.group();
+        }
+        return null;
+    }
 
+    @NonNull
+    public static Matcher getEnglishWordMatcher(@NonNull String content) {
+        Pattern pattern = Pattern.compile("^*[A-Za-z]+");
+        return pattern.matcher(content);
+    }
+
+
+    public static boolean checkTouchEnglishWord(@NonNull Paint paint, @NonNull Section section
+            , @NonNull MotionEvent event) {
+        Rect bounds = section.getBounds();
+        String content = section.getContent();
+        Matcher matcher = getEnglishWordMatcher(section.getContent());
+        Rect temp = new Rect();
+        while (matcher.find()) {
+            String word = matcher.group();
+            int start = matcher.start();
+            int preWidth = start > 0 ? getWordWidth(paint, content.substring(0, start)) : 0;
+            int wordWidth = getWordWidth(paint, word);
+            temp.set(bounds.left + preWidth, bounds.top, bounds.left + wordWidth + preWidth, bounds.bottom);
+            if (temp.contains((int) event.getX(), (int) event.getY())) {
+                section.setSelectedBounds(temp);
+                section.setSelectedStart(start);
+                section.setSelectedEnd(matcher.end());
+                return true;
+            }
+        }
+        return false;
+    }
 
 
 }

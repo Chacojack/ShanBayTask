@@ -12,6 +12,9 @@ public class Section {
     private Rect bounds;
     private boolean selected = false;
     private boolean isRectified = false;
+    private Rect selectedBounds;
+    private int selectedStart;
+    private int selectedEnd;
 
     public String getContent() {
         return content;
@@ -46,6 +49,33 @@ public class Section {
         }
         isRectified = true;
         bounds.offset(x, y);
+        return this;
+    }
+
+    public Rect getSelectedBounds() {
+        return selectedBounds;
+    }
+
+    public Section setSelectedBounds(Rect selectedBounds) {
+        this.selectedBounds = selectedBounds;
+        return this;
+    }
+
+    public int getSelectedStart() {
+        return selectedStart;
+    }
+
+    public Section setSelectedStart(int selectedStart) {
+        this.selectedStart = selectedStart;
+        return this;
+    }
+
+    public int getSelectedEnd() {
+        return selectedEnd;
+    }
+
+    public Section setSelectedEnd(int selectedEnd) {
+        this.selectedEnd = selectedEnd;
         return this;
     }
 }

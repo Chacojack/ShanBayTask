@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import java.util.List;
+import java.util.regex.Matcher;
 
 /**
  * 显示一段英文文字的View
@@ -26,7 +27,10 @@ public class ParagraphView extends View {
     private int rectColor = 0xFF3F51B5;
     private int textColor = 0xFF000000;
     private int textLightColor = 0xFFFFFFFF;
-    private int rectPadding = 8;
+    private int rectLeftPadding = 4;
+    private int rectTopPadding = 8;
+    private int rectRightPadding = 5;
+    private int rectBottomPadding = 8;
     private int padding = 0;
 
     private float rectRound = 8f;
@@ -144,16 +148,21 @@ public class ParagraphView extends View {
                 }
                 for (Section section : row.getSections()) {
                     section.rectifyBounds((int) x, (int) y);
+                    String content = section.getContent();
                     if (section.isSelected()) {
-                        Rect bounds = section.getBounds();
-                        RectF rectF = new RectF(bounds.left - rectPadding, bounds.top - rectPadding
-                                , bounds.right + rectPadding, bounds.bottom + rectPadding);
+                        Rect selectedBounds = section.getSelectedBounds();
+                        int selectedStart = section.getSelectedStart();
+                        int selectedEnd = section.getSelectedEnd();
+                        RectF rectF = new RectF(selectedBounds.left - rectLeftPadding, selectedBounds.top - rectTopPadding
+                                , selectedBounds.right + rectRightPadding, selectedBounds.bottom + rectBottomPadding);
                         canvas.drawRoundRect(rectF, rectRound, rectRound, rectPaint);
+                        canvas.drawText(content, 0, selectedStart, x, y, textPaint);
                         textPaint.setColor(textLightColor);
-                        canvas.drawText(section.getContent(), x, y, textPaint);
+                        canvas.drawText(content, selectedStart, selectedEnd, selectedBounds.left, y, textPaint);
                         textPaint.setColor(textColor);
+                        canvas.drawText(content, selectedEnd, content.length(), rectF.right, y, textPaint);
                     } else {
-                        canvas.drawText(section.getContent(), x, y, textPaint);
+                        canvas.drawText(content, x, y, textPaint);
                     }
                     x += section.getBounds().width() + blankWidth;
                 }
@@ -185,9 +194,13 @@ public class ParagraphView extends View {
     private boolean handleTouchUp(MotionEvent event) {
         if (touchSection != null) {
             if (touchSection.getBounds().contains((int) event.getX(), (int) event.getY())) {
-                touchSection.setSelected(true);
-                invalidate();
-
+                String englishWord = ParagraphMathUtils.getEnglishWord(touchSection.getContent());
+                if (englishWord != null) {
+                    touchSection.setSelected(true);
+                    invalidate();
+                } else {
+                    touchSection = null;
+                }
             }
         }
         return false;
@@ -230,7 +243,11 @@ public class ParagraphView extends View {
                 Row row = rows.get(rowNumber);
                 for (Section section : row.getSections()) {
                     if (section.getBounds().contains((int) x, (int) y)) {
-                        return section;
+                        if (ParagraphMathUtils.checkTouchEnglishWord(textPaint, section, event)) {
+                            return section;
+                        } else {
+                            return null;
+                        }
                     }
                 }
             }
