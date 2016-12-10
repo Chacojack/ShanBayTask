@@ -27,6 +27,7 @@ public class ParagraphView extends View {
     private int textColor = 0xFF000000;
     private int textLightColor = 0xFFFFFFFF;
     private int rectPadding = 8;
+    private int padding = 0;
 
     private float rectRound = 8f;
     private float lineSize = 1f;
@@ -49,18 +50,20 @@ public class ParagraphView extends View {
 
     public ParagraphView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        initAttrs(context, attrs, defStyle);
         init(context, attrs, defStyle);
+        initAttrs(context, attrs, defStyle);
         afterViews();
     }
 
     private void initAttrs(Context context, AttributeSet attrs, int defStyle) {
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.ParagraphView);
-        textSize = typedArray.getDimensionPixelSize(R.styleable.ParagraphView_textSize, textSize);
+        int textSize = typedArray.getDimensionPixelSize(R.styleable.ParagraphView_textSize, this.textSize);
+        setTextSize(textSize);
         lineSize = typedArray.getFloat(R.styleable.ParagraphView_lineSize, lineSize);
         textColor = typedArray.getColor(R.styleable.ParagraphView_textColor, textColor);
         textLightColor = typedArray.getColor(R.styleable.ParagraphView_textLightColor, textLightColor);
         rectColor = typedArray.getColor(R.styleable.ParagraphView_rectColor, rectColor);
+        padding = typedArray.getDimensionPixelSize(R.styleable.ParagraphView_padding, padding);
         typedArray.recycle();
     }
 
@@ -74,6 +77,14 @@ public class ParagraphView extends View {
         textPaint.setColor(textColor);
         rectPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         rectPaint.setColor(rectColor);
+    }
+
+    public void setTextSize(int textSize) {
+        if (this.textSize == textSize) {
+            return;
+        }
+        this.textSize = textSize;
+        textPaint.setTextSize(textSize);
     }
 
     private void afterViews() {
@@ -96,11 +107,11 @@ public class ParagraphView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        int widthSize = MeasureSpec.getSize(widthMeasureSpec) - padding * 2;
         if (content != null) {
             rows = ParagraphMathUtils.divideToLine(textPaint, content, widthSize);
             lineHeight = (int) (ParagraphMathUtils.getLineHeight(textPaint) * lineSize);
-            int height = lineHeight * rows.size();
+            int height = lineHeight * rows.size() + padding * 2;
 
             heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
             setMeasuredDimension(widthMeasureSpec, heightMeasureSpec);
@@ -119,16 +130,16 @@ public class ParagraphView extends View {
         super.onDraw(canvas);
         if (rows != null) {
             Paint.FontMetrics fontMetrics = textPaint.getFontMetrics();
-            float y = -fontMetrics.top;
+            float y = padding - fontMetrics.top;
             for (Row row : rows) {
-                float x = 0;
+                float x = padding;
                 float blankWidth = 0;
                 if (row.isTail()) {
                     blankWidth = ParagraphMathUtils.getBlankWidth(textPaint);
                 } else {
                     if (row.getSections().size() > 1) {
                         int realWidth = row.getRealWidth();
-                        blankWidth = (getWidth() - realWidth) * 1f / (row.getSections().size() - 1);
+                        blankWidth = (getWidth() - padding * 2 - realWidth) * 1f / (row.getSections().size() - 1);
                     }
                 }
                 for (Section section : row.getSections()) {
@@ -176,6 +187,7 @@ public class ParagraphView extends View {
             if (touchSection.getBounds().contains((int) event.getX(), (int) event.getY())) {
                 touchSection.setSelected(true);
                 invalidate();
+
             }
         }
         return false;
