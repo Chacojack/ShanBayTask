@@ -17,7 +17,7 @@ import task.jack.me.shanbay.utils.FileUtils;
  * 完成作业一的Activity
  * <p>
  * 要求：
- * 1. 渲染一段英文文本
+ * 1. 渲染一段英文文本 OK
  * 2. 文本中的单词，被点击后可以高亮
  * 3. 单词高亮后，显示一个查词框(不限查词框形式)。 查词框的内容:
  * a. 单词文本 b. 单词释义 c. 单词音标
@@ -27,8 +27,8 @@ import task.jack.me.shanbay.utils.FileUtils;
  * 6. 合理的注释方便代码阅读
  * <p>
  * 进阶：
- * 1. 通过自定义View实现该控件
- * 2. 文本实现两边对齐并且同样支持点击查词
+ * 1. 通过自定义View实现该控件 OK
+ * 2. 文本实现两边对齐并且同样支持点击查词 OK
  * 3. 给查词框增加出现和消失的动画或者合理的手势操作
  */
 public class Task1Activity extends AppCompatActivity {

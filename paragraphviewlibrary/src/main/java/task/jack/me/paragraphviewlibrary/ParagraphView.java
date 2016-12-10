@@ -4,9 +4,12 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
 
 import java.util.List;
@@ -20,13 +23,20 @@ public class ParagraphView extends View {
 
     private int textSize = 15;
     private int lineHeight;
+    private int rectColor = 0xFF3F51B5;
+    private int textColor = 0xFF000000;
+    private int textLightColor = 0xFFFFFFFF;
+    private int rectPadding = 8;
 
+    private float rectRound = 8f;
     private float lineSize = 1f;
 
     private String content;
 
     private Paint textPaint;
-    private List<Row> sections;
+    private Paint rectPaint;
+    private List<Row> rows;
+    private Section touchSection;
 
 
     public ParagraphView(Context context) {
@@ -48,6 +58,9 @@ public class ParagraphView extends View {
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.ParagraphView);
         textSize = typedArray.getDimensionPixelSize(R.styleable.ParagraphView_textSize, textSize);
         lineSize = typedArray.getFloat(R.styleable.ParagraphView_lineSize, lineSize);
+        textColor = typedArray.getColor(R.styleable.ParagraphView_textColor, textColor);
+        textLightColor = typedArray.getColor(R.styleable.ParagraphView_textLightColor, textLightColor);
+        rectColor = typedArray.getColor(R.styleable.ParagraphView_rectColor, rectColor);
         typedArray.recycle();
     }
 
@@ -58,6 +71,9 @@ public class ParagraphView extends View {
                         TypedValue.COMPLEX_UNIT_DIP,
                         textSize,
                         context.getResources().getDisplayMetrics()));
+        textPaint.setColor(textColor);
+        rectPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        rectPaint.setColor(rectColor);
     }
 
     private void afterViews() {
@@ -82,9 +98,9 @@ public class ParagraphView extends View {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         if (content != null) {
-            sections = ParagraphMathUtils.divideToLine(textPaint, content, widthSize);
+            rows = ParagraphMathUtils.divideToLine(textPaint, content, widthSize);
             lineHeight = (int) (ParagraphMathUtils.getLineHeight(textPaint) * lineSize);
-            int height = lineHeight * sections.size();
+            int height = lineHeight * rows.size();
 
             heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
             setMeasuredDimension(widthMeasureSpec, heightMeasureSpec);
@@ -101,10 +117,10 @@ public class ParagraphView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (sections != null) {
+        if (rows != null) {
             Paint.FontMetrics fontMetrics = textPaint.getFontMetrics();
             float y = -fontMetrics.top;
-            for (Row row : sections) {
+            for (Row row : rows) {
                 float x = 0;
                 float blankWidth = 0;
                 if (row.isTail()) {
@@ -116,13 +132,100 @@ public class ParagraphView extends View {
                     }
                 }
                 for (Section section : row.getSections()) {
-                    canvas.drawText(section.getContent(), x, y, textPaint);
+                    section.rectifyBounds((int) x, (int) y);
+                    if (section.isSelected()) {
+                        Rect bounds = section.getBounds();
+                        RectF rectF = new RectF(bounds.left - rectPadding, bounds.top - rectPadding
+                                , bounds.right + rectPadding, bounds.bottom + rectPadding);
+                        canvas.drawRoundRect(rectF, rectRound, rectRound, rectPaint);
+                        textPaint.setColor(textLightColor);
+                        canvas.drawText(section.getContent(), x, y, textPaint);
+                        textPaint.setColor(textColor);
+                    } else {
+                        canvas.drawText(section.getContent(), x, y, textPaint);
+                    }
                     x += section.getBounds().width() + blankWidth;
                 }
                 y += lineHeight;
             }
         }
     }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        int action = event.getAction();
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                return handleTouchDown(event);
+            case MotionEvent.ACTION_MOVE:
+                return handleTouchMove(event);
+            case MotionEvent.ACTION_CANCEL:
+                touchSection = null;
+                return false;
+            case MotionEvent.ACTION_UP:
+                return handleTouchUp(event);
+            default:
+                this.touchSection = null;
+                break;
+        }
+        return super.onTouchEvent(event);
+    }
+
+    private boolean handleTouchUp(MotionEvent event) {
+        if (touchSection != null) {
+            if (touchSection.getBounds().contains((int) event.getX(), (int) event.getY())) {
+                touchSection.setSelected(true);
+                invalidate();
+            }
+        }
+        return false;
+    }
+
+    private boolean handleTouchMove(MotionEvent event) {
+        if (touchSection != null) {
+            if (touchSection.getBounds().contains((int) event.getX(), (int) event.getY())) {
+                return true;
+            } else {
+                touchSection = null;
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    private boolean handleTouchDown(MotionEvent event) {
+        if (touchSection != null) {
+            touchSection.setSelected(false);
+            touchSection = null;
+            invalidate();
+        }
+        Section section = getTouchSection(event);
+        if (section != null) {
+            touchSection = section;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private Section getTouchSection(MotionEvent event) {
+        if (rows != null) {
+            float x = event.getX();
+            float y = event.getY();
+            int rowNumber = (int) (y / lineHeight);
+            if (rows.size() > rowNumber) {
+                Row row = rows.get(rowNumber);
+                for (Section section : row.getSections()) {
+                    if (section.getBounds().contains((int) x, (int) y)) {
+                        return section;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
 
 }
 
