@@ -136,38 +136,46 @@ public class ParagraphView extends View {
             Paint.FontMetrics fontMetrics = textPaint.getFontMetrics();
             float y = padding - fontMetrics.top;
             for (Row row : rows) {
-                float x = padding;
-                float blankWidth = 0;
-                if (row.isTail()) {
-                    blankWidth = ParagraphMathUtils.getBlankWidth(textPaint);
-                } else {
-                    if (row.getSections().size() > 1) {
-                        int realWidth = row.getRealWidth();
-                        blankWidth = (getWidth() - padding * 2 - realWidth) * 1f / (row.getSections().size() - 1);
-                    }
-                }
-                for (Section section : row.getSections()) {
-                    section.rectifyBounds((int) x, (int) y);
-                    String content = section.getContent();
-                    if (section.isSelected()) {
-                        Rect selectedBounds = section.getSelectedBounds();
-                        int selectedStart = section.getSelectedStart();
-                        int selectedEnd = section.getSelectedEnd();
-                        RectF rectF = new RectF(selectedBounds.left - rectLeftPadding, selectedBounds.top - rectTopPadding
-                                , selectedBounds.right + rectRightPadding, selectedBounds.bottom + rectBottomPadding);
-                        canvas.drawRoundRect(rectF, rectRound, rectRound, rectPaint);
-                        canvas.drawText(content, 0, selectedStart, x, y, textPaint);
-                        textPaint.setColor(textLightColor);
-                        canvas.drawText(content, selectedStart, selectedEnd, selectedBounds.left, y, textPaint);
-                        textPaint.setColor(textColor);
-                        canvas.drawText(content, selectedEnd, content.length(), rectF.right, y, textPaint);
-                    } else {
-                        canvas.drawText(content, x, y, textPaint);
-                    }
-                    x += section.getBounds().width() + blankWidth;
-                }
+                drawRow(canvas, row, y);
                 y += lineHeight;
             }
+        }
+    }
+
+    private void drawRow(Canvas canvas, Row row, float y) {
+        float x = padding;
+        float blankWidth = 0;
+        if (row.isTail()) {
+            blankWidth = ParagraphMathUtils.getBlankWidth(textPaint);
+        } else {
+            if (row.getSections().size() > 1) {
+                int realWidth = row.getRealWidth();
+                blankWidth = (getWidth() - padding * 2 - realWidth) * 1f / (row.getSections().size() - 1);
+            }
+        }
+        for (Section section : row.getSections()) {
+            drawSection(canvas, section, x, y);
+            x += section.getBounds().width() + blankWidth;
+        }
+    }
+
+    private void drawSection(Canvas canvas, Section section, float x, float y) {
+        section.rectifyBounds((int) x, (int) y);
+        String content = section.getContent();
+        if (section.isSelected()) {
+            Rect selectedBounds = section.getSelectedBounds();
+            int selectedStart = section.getSelectedStart();
+            int selectedEnd = section.getSelectedEnd();
+            RectF rectF = new RectF(selectedBounds.left - rectLeftPadding, selectedBounds.top - rectTopPadding
+                    , selectedBounds.right + rectRightPadding, selectedBounds.bottom + rectBottomPadding);
+            canvas.drawRoundRect(rectF, rectRound, rectRound, rectPaint);
+            canvas.drawText(content, 0, selectedStart, x, y, textPaint);
+            textPaint.setColor(textLightColor);
+            canvas.drawText(content, selectedStart, selectedEnd, selectedBounds.left, y, textPaint);
+            textPaint.setColor(textColor);
+            canvas.drawText(content, selectedEnd, content.length(), rectF.right, y, textPaint);
+        } else {
+            canvas.drawText(content, x, y, textPaint);
         }
     }
 
