@@ -3,7 +3,6 @@ package task.jack.me.shanbay;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -13,8 +12,8 @@ import java.io.InputStream;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import task.jack.me.paragraphviewlibrary.ParagraphView;
-import task.jack.me.paragraphviewlibrary.SelectedEventListener;
 import task.jack.me.shanbay.utils.FileUtils;
+import task.jack.me.wordsearchviewlibrary.WordSearchView;
 
 /**
  * 完成作业一的Activity
@@ -39,6 +38,8 @@ public class Task1Activity extends AppCompatActivity {
     private static final String TAG = Task1Activity.class.getSimpleName();
     @BindView(R.id.paragraph_view)
     ParagraphView paragraphView;
+    @BindView(R.id.word_search_view)
+    WordSearchView wordSearchView;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, Task1Activity.class);
@@ -51,8 +52,9 @@ public class Task1Activity extends AppCompatActivity {
         setContentView(R.layout.activity_task1);
         ButterKnife.bind(this);
 
-        paragraphView.setSelectedEventListener((type, word) -> Log.d(TAG, "onSelectedEvent() called with: type = [" + type + "], word = [" + word + "]"));
 
+        paragraphView.setSelectedEventListener((type, word) -> Log.d(TAG, "onSelectedEvent() called with: type = [" + type + "], word = [" + word + "]"));
+        wordSearchView.search("good");
         // TODO: 2016/12/10 to background
         String content = null;
         InputStream inputStream = null;

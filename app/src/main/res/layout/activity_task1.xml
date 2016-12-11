@@ -17,7 +17,14 @@
             paragraph:textSize="18sp"
             />
 
+
     </ScrollView>
+
+    <task.jack.me.wordsearchviewlibrary.WordSearchView
+        android:id="@+id/word_search_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
 
 
 
