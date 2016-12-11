@@ -5,25 +5,27 @@
     <TextView
         android:id="@+id/txt_content"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/content_height"
         android:maxLines="1"
         android:textColor="@color/colorPrimary"
-        android:textSize="18sp" />
+        android:textSize="@dimen/content_text_size" />
 
     <TextView
         android:id="@+id/txt_pronunciation"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/pronunciation_height"
         android:layout_below="@+id/txt_content"
         android:maxLines="1"
-        android:textColor="@color/black" />
+        android:textColor="@color/black"
+        android:textSize="@dimen/pronunciation_text_size" />
 
     <TextView
         android:id="@+id/txt_definition"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/definition_height"
         android:layout_below="@+id/txt_pronunciation"
-        android:layout_marginTop="@dimen/definition_margin_top" />
+        android:layout_marginTop="@dimen/definition_margin_top"
+        android:textSize="@dimen/definition_text_size" />
 
     <task.jack.me.awesomefontviewlibrary.AwesomeFontView
         android:id="@+id/btn_audio"
@@ -34,7 +36,7 @@
         android:gravity="center"
         android:includeFontPadding="false"
         android:text="@string/audio_off"
-        android:textSize="18sp"
+        android:textSize="@dimen/audio_icon_size"
         awesome:pressableTextColor="@color/colorPrimary" />
 
 </merge>

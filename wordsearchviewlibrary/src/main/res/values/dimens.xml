@@ -3,4 +3,12 @@
     <dimen name="word_search_root_padding">16dp</dimen>
     <dimen name="definition_margin_top">16dp</dimen>
     <dimen name="audio_btn_size">25dp</dimen>
+    <dimen name="content_height">24dp</dimen>
+    <dimen name="content_text_size">18sp</dimen>
+    <dimen name="pronunciation_height">20dp</dimen>
+    <dimen name="pronunciation_text_size">15sp</dimen>
+    <dimen name="definition_height">20dp</dimen>
+    <dimen name="definition_text_size">15sp</dimen>
+    <dimen name="audio_icon_size">18dp</dimen>
+    <dimen name="default_word_search_view_height">112dp</dimen>
 </resources>

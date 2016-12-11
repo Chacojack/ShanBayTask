@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +16,9 @@ import butterknife.ButterKnife;
 import task.jack.me.paragraphviewlibrary.ParagraphView;
 import task.jack.me.shanbay.utils.FileUtils;
 import task.jack.me.wordsearchviewlibrary.WordSearchView;
+
+import static task.jack.me.paragraphviewlibrary.SelectedEventListener.CANCEL;
+import static task.jack.me.paragraphviewlibrary.SelectedEventListener.SELECTED;
 
 /**
  * 完成作业一的Activity
@@ -38,8 +43,11 @@ public class Task1Activity extends AppCompatActivity {
     private static final String TAG = Task1Activity.class.getSimpleName();
     @BindView(R.id.paragraph_view)
     ParagraphView paragraphView;
-    @BindView(R.id.word_search_view)
+    @BindView(R.id.root_fl)
+    FrameLayout rootRl;
+
     WordSearchView wordSearchView;
+
 
     public static void start(Context context) {
         Intent intent = new Intent(context, Task1Activity.class);
@@ -53,8 +61,20 @@ public class Task1Activity extends AppCompatActivity {
         ButterKnife.bind(this);
 
 
-        paragraphView.setSelectedEventListener((type, word) -> Log.d(TAG, "onSelectedEvent() called with: type = [" + type + "], word = [" + word + "]"));
-        wordSearchView.search("good");
+        paragraphView.setSelectedEventListener((type, word) -> {
+            Log.d(TAG, "onSelectedEvent() called with: type = [" + type + "], word = [" + word + "]");
+            switch (type) {
+                case SELECTED:
+                    ensureWordSearchView();
+                    wordSearchView.setContainer(rootRl).search(word).show();
+                    break;
+                case CANCEL:
+                    ensureWordSearchView();
+                    wordSearchView.hide();
+                    break;
+            }
+        });
+
         // TODO: 2016/12/10 to background
         String content = null;
         InputStream inputStream = null;
@@ -73,6 +93,12 @@ public class Task1Activity extends AppCompatActivity {
                 }
                 inputStream = null;
             }
+        }
+    }
+
+    private void ensureWordSearchView() {
+        if (wordSearchView == null) {
+            wordSearchView = WordSearchView.getDefault(this);
         }
     }
 }
