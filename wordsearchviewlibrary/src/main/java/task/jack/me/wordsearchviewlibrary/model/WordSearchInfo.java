@@ -77,4 +77,30 @@ public class WordSearchInfo {
         return new Gson().toJson(this);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof WordSearchInfo)) return false;
+
+        WordSearchInfo that = (WordSearchInfo) o;
+
+        if (id != that.id) return false;
+        if (content != null ? !content.equals(that.content) : that.content != null) return false;
+        if (pronunciation != null ? !pronunciation.equals(that.pronunciation) : that.pronunciation != null)
+            return false;
+        if (definition != null ? !definition.equals(that.definition) : that.definition != null)
+            return false;
+        return audioUrl != null ? audioUrl.equals(that.audioUrl) : that.audioUrl == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + (content != null ? content.hashCode() : 0);
+        result = 31 * result + (pronunciation != null ? pronunciation.hashCode() : 0);
+        result = 31 * result + (definition != null ? definition.hashCode() : 0);
+        result = 31 * result + (audioUrl != null ? audioUrl.hashCode() : 0);
+        return result;
+    }
 }

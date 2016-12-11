@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="word_search_root_padding">16dp</dimen>
+    <dimen name="definition_margin_top">16dp</dimen>
+    <dimen name="audio_btn_size">25dp</dimen>
+</resources>
