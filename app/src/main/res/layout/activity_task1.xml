@@ -16,6 +16,7 @@
             android:layout_height="wrap_content"
             paragraph:padding="8dp"
             paragraph:textSize="18sp"
+            paragraph:lineSize="1.3"
             />
 
 
