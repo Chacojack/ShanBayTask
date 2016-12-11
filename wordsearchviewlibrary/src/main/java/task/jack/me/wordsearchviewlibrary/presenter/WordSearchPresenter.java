@@ -42,8 +42,9 @@ public class WordSearchPresenter implements WordSearchContract.IWordSearchPresen
         BackgroundExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                WordSearchResult result = HttpManager.searchWord(WordSearchPresenter.this.word);
-                if (result.getStatusCode() == ProtocolConstant.CODE_SUCCESS
+                final WordSearchResult result = HttpManager.searchWord(WordSearchPresenter.this.word);
+                if (result != null
+                        && result.getStatusCode() == ProtocolConstant.CODE_SUCCESS
                         && ProtocolConstant.MSG_SUCCESS.equals(result.getMsg())) {
                     final WordSearchInfo data = result.getData();
                     if (data != null) {
@@ -60,13 +61,28 @@ public class WordSearchPresenter implements WordSearchContract.IWordSearchPresen
                     } else {
                         Log.d(TAG, "run: data is null");
                     }
+                } else {
+                    Log.d(TAG, "search : result" + result);
+                    UiThreadExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            IWordSearchView view = viewWeakReference.get();
+                            if (view != null) {
+                                if (result != null) {
+                                    view.alarmSearchFailMsg(result.getMsg());
+                                } else {
+                                    view.alarmSearchFailDefaultMsg();
+                                }
+                            }
+                        }
+                    });
                 }
             }
         });
     }
 
     @Override
-    public void playAudio(final String audioUrl) {
+    public void playAudio(@NonNull final String audioUrl) {
         BackgroundExecutor.execute(new Runnable() {
             @Override
             public void run() {

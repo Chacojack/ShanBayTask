@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">WordCheckedViewLibrary</string>
+    <string name="default_search_fail_msg">没有查询结果</string>
 </resources>
