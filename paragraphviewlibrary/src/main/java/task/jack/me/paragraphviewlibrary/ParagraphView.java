@@ -13,7 +13,6 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import java.util.List;
-import java.util.regex.Matcher;
 
 /**
  * 显示一段英文文字的View
@@ -41,9 +40,10 @@ public class ParagraphView extends View {
     private Paint textPaint;
     private Paint rectPaint;
     private List<Row> rows;
-    private Section touchSection;
     private Section tempTouchSection;
+    private Section touchSection;
 
+    private SelectedEventListener selectedEventListener;
 
     public ParagraphView(Context context) {
         this(context, null);
@@ -106,6 +106,15 @@ public class ParagraphView extends View {
         }
         this.content = content;
         requestLayout();
+        return this;
+    }
+
+    public SelectedEventListener getSelectedEventListener() {
+        return selectedEventListener;
+    }
+
+    public ParagraphView setSelectedEventListener(SelectedEventListener selectedEventListener) {
+        this.selectedEventListener = selectedEventListener;
         return this;
     }
 
@@ -189,55 +198,48 @@ public class ParagraphView extends View {
             case MotionEvent.ACTION_MOVE:
                 return handleTouchMove(event);
             case MotionEvent.ACTION_CANCEL:
-                touchSection = null;
+                tempTouchSection = null;
                 return false;
             case MotionEvent.ACTION_UP:
                 return handleTouchUp(event);
             default:
-                this.touchSection = null;
+                this.tempTouchSection = null;
                 break;
         }
         return super.onTouchEvent(event);
     }
 
     private boolean handleTouchUp(MotionEvent event) {
-        if (touchSection != null) {
-            if (touchSection.getSelectedBounds().contains((int) event.getX(), (int) event.getY())) {
-                touchSection.setSelected(true);
-                invalidate();
+        if (tempTouchSection != null) {
+            if (tempTouchSection.getSelectedBounds().contains((int) event.getX(), (int) event.getY())) {
+                tempTouchSection.setSelected(true);
+                onSelectedEvent(tempTouchSection);
             } else {
-                touchSection = null;
+                tempTouchSection = null;
+                onCancelSelectedEvent();
             }
+        } else {
+            onCancelSelectedEvent();
         }
         return false;
     }
 
     private boolean handleTouchMove(MotionEvent event) {
-        if (touchSection != null) {
-            if (touchSection.getBounds().contains((int) event.getX(), (int) event.getY())) {
-                return true;
-            } else {
-                touchSection = null;
-                return false;
+        if (tempTouchSection != null) {
+            if (!tempTouchSection.getBounds().contains((int) event.getX(), (int) event.getY())) {
+                tempTouchSection = null;
             }
-        } else {
-            return false;
         }
+        return true;
     }
 
     private boolean handleTouchDown(MotionEvent event) {
-        if (touchSection != null) {
-            touchSection.setSelected(false);
-            touchSection = null;
-            invalidate();
-        }
+        tempTouchSection = null;
         Section section = getTouchSection(event);
         if (section != null) {
-            touchSection = section;
-            return true;
-        } else {
-            return false;
+            tempTouchSection = section;
         }
+        return true;
     }
 
     private Section getTouchSection(MotionEvent event) {
@@ -259,6 +261,38 @@ public class ParagraphView extends View {
             }
         }
         return null;
+    }
+
+    private void onSelectedEvent(Section tempTouchSection) {
+        if (touchSection != null) {
+            touchSection.setSelected(false);
+        }
+        touchSection = tempTouchSection;
+        touchSection.setSelected(true);
+        invalidate();
+        triggerSelectedEventListener(SelectedEventListener.SELECTED, touchSection);
+    }
+
+    private void triggerSelectedEventListener(@SelectedEventListener.SelectedEventType int type, Section touchSection) {
+        if (selectedEventListener != null) {
+            String word = null;
+            if (touchSection != null) {
+                String content = touchSection.getContent();
+                int selectedStart = touchSection.getSelectedStart();
+                int selectedEnd = touchSection.getSelectedEnd();
+                word = content.substring(selectedStart, selectedEnd);
+            }
+            selectedEventListener.onSelectedEvent(type, word);
+        }
+    }
+
+    private void onCancelSelectedEvent() {
+        if (touchSection != null) {
+            touchSection.setSelected(false);
+            touchSection = null;
+            invalidate();
+            triggerSelectedEventListener(SelectedEventListener.CANCEL, touchSection);
+        }
     }
 
 
