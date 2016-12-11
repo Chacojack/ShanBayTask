@@ -4,11 +4,12 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import task.jack.me.awesomefontviewlibrary.AwesomeFontView;
 import task.jack.me.wordsearchviewlibrary.model.WordSearchInfo;
-import task.jack.me.wordsearchviewlibrary.ui.AwesomeFontView;
 import task.jack.me.wordseatchviewlibrary.R;
 import task.jack.me.wordsearchviewlibrary.contract.WordSearchContract;
 import task.jack.me.wordsearchviewlibrary.contract.WordSearchContract.IWordSearchPresenter;
@@ -66,6 +67,12 @@ public class WordSearchView extends RelativeLayout implements WordSearchContract
 
     private void afterViews() {
         audioBtn.setText(audioOff);
+        audioBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
     public WordSearchView search(String word){

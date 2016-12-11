@@ -34,7 +34,8 @@
         android:layout_marginTop="@dimen/definition_margin_top"
         />
 
-    <task.jack.me.wordsearchviewlibrary.ui.AwesomeFontView
+    <task.jack.me.awesomefontviewlibrary.AwesomeFontView
+        xmlns:awesome="http://schemas.android.com/apk/res-auto"
         android:id="@+id/btn_audio"
         android:layout_width="@dimen/audio_btn_size"
         android:layout_height="@dimen/audio_btn_size"
@@ -42,9 +43,9 @@
         android:layout_alignParentEnd="true"
         android:includeFontPadding="false"
         android:gravity="center"
-        android:textColor="@color/colorPrimary"
         android:textSize="18sp"
         android:text="@string/audio_off"
+        awesome:pressableTextColor="@color/colorPrimary"
         />
 
 

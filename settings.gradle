@@ -1,1 +1,1 @@
-include ':app', ':paragraphviewlibrary', ':wordsearchviewlibrary'
+include ':app', ':paragraphviewlibrary', ':wordsearchviewlibrary', ':awesomefontviewlibrary'
