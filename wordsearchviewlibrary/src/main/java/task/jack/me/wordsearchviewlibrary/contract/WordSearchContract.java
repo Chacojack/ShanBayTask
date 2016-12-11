@@ -13,11 +13,15 @@ public class WordSearchContract {
     public interface IWordSearchView {
 
         void showWordSearchInfo(@NonNull WordSearchInfo data);
+
+        void resetAudioBtn();
     }
 
     public interface IWordSearchPresenter {
 
         void search(@NonNull String word);
+
+        void playAudio(String audioUrl);
     }
 
 }

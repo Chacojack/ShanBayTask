@@ -1,53 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:awesome="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/word_search_root_padding"
     android:background="@color/white"
-    >
+    android:padding="@dimen/word_search_root_padding">
 
     <TextView
         android:id="@+id/txt_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:maxLines="1"
-        android:textSize="18sp"
         android:textColor="@color/colorPrimary"
-        />
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/txt_pronunciation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/txt_content"
-
         android:maxLines="1"
-        android:textColor="@color/black"
-
-        />
+        android:textColor="@color/black" />
 
     <TextView
         android:id="@+id/txt_definition"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/txt_pronunciation"
-        android:layout_marginTop="@dimen/definition_margin_top"
-        />
+        android:layout_marginTop="@dimen/definition_margin_top" />
 
     <task.jack.me.awesomefontviewlibrary.AwesomeFontView
-        xmlns:awesome="http://schemas.android.com/apk/res-auto"
         android:id="@+id/btn_audio"
         android:layout_width="@dimen/audio_btn_size"
         android:layout_height="@dimen/audio_btn_size"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:includeFontPadding="false"
+        android:layout_alignParentRight="true"
         android:gravity="center"
-        android:textSize="18sp"
+        android:includeFontPadding="false"
         android:text="@string/audio_off"
-        awesome:pressableTextColor="@color/colorPrimary"
-        />
-
-
+        android:textSize="18sp"
+        awesome:pressableTextColor="@color/colorPrimary" />
 
 </RelativeLayout>

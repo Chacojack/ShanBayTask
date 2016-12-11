@@ -70,7 +70,8 @@ public class WordSearchView extends RelativeLayout implements WordSearchContract
         audioBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                audioBtn.setText(audioOn);
+                presenter.playAudio(wordSearchInfo.getAudioUrl());
             }
         });
     }
@@ -90,5 +91,10 @@ public class WordSearchView extends RelativeLayout implements WordSearchContract
         contentTxt.setText(data.getContent());
         pronunciationTxt.setText(data.getPronunciation());
         definitionTxt.setText(data.getDefinition());
+    }
+
+    @Override
+    public void resetAudioBtn() {
+        audioBtn.setText(audioOff);
     }
 }
