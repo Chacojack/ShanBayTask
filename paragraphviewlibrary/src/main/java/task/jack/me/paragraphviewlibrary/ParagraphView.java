@@ -42,6 +42,7 @@ public class ParagraphView extends View {
     private Paint rectPaint;
     private List<Row> rows;
     private Section touchSection;
+    private Section tempTouchSection;
 
 
     public ParagraphView(Context context) {
@@ -201,14 +202,11 @@ public class ParagraphView extends View {
 
     private boolean handleTouchUp(MotionEvent event) {
         if (touchSection != null) {
-            if (touchSection.getBounds().contains((int) event.getX(), (int) event.getY())) {
-                String englishWord = ParagraphMathUtils.getEnglishWord(touchSection.getContent());
-                if (englishWord != null) {
-                    touchSection.setSelected(true);
-                    invalidate();
-                } else {
-                    touchSection = null;
-                }
+            if (touchSection.getSelectedBounds().contains((int) event.getX(), (int) event.getY())) {
+                touchSection.setSelected(true);
+                invalidate();
+            } else {
+                touchSection = null;
             }
         }
         return false;
