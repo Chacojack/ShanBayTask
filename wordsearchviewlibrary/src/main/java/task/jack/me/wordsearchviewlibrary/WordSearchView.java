@@ -1,5 +1,6 @@
 package task.jack.me.wordsearchviewlibrary;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Color;
@@ -57,6 +58,7 @@ public class WordSearchView extends RelativeLayout implements WordSearchContract
     private IWordSearchPresenter presenter;
     private ObjectAnimator showAnimator;
     private ObjectAnimator hideAnimator;
+    private ObjectAnimator lastestAnimator;
 
 
     public WordSearchView(Context context) {
@@ -230,7 +232,7 @@ public class WordSearchView extends RelativeLayout implements WordSearchContract
             return;
         }
         showAnimator.setFloatValues(start, end);
-        showAnimator.start();
+        startAnimator(showAnimator);
     }
 
     private void ensureEnterAnimator() {
@@ -248,7 +250,7 @@ public class WordSearchView extends RelativeLayout implements WordSearchContract
             hideAnimator.cancel();
         }
         hideAnimator.setFloatValues(getY(), container.getHeight());
-        hideAnimator.start();
+        startAnimator(hideAnimator);
     }
 
     private void ensureHideAnimator() {
@@ -258,6 +260,14 @@ public class WordSearchView extends RelativeLayout implements WordSearchContract
             hideAnimator.setPropertyName("Y");
             hideAnimator.setTarget(this);
         }
+    }
+
+    private void startAnimator(ObjectAnimator animator){
+        if (lastestAnimator != null && lastestAnimator.isRunning()) {
+            lastestAnimator.cancel();
+        }
+        lastestAnimator = animator;
+        lastestAnimator.start();
     }
 
 }
