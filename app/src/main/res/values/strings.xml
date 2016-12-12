@@ -2,4 +2,28 @@
     <string name="app_name">ShanBayTask</string>
     <string name="task_1">Task 1</string>
     <string name="task_2">Task 2</string>
+    <string name="refresh">Refresh</string>
+
+    <string-array name="img_list_1">
+        <item>https://static.baydn.com/media/media_store/image/f1672263006c6e28bb9dee7652fa4cf6.jpg</item>
+        <item>https://static.baydn.com/media/media_store/image/8c997fae9ebb2b22ecc098a379cc2ca3.jpg</item>
+        <item>https://static.baydn.com/media/media_store/image/2a4616f067285b4bd59fe5401cd7106b.jpeg</item>
+        <item>https://static.baydn.com/media/media_store/image/b0e3ab329c8d8218d2af5c8dfdc21125.jpg</item>
+        <item>https://static.baydn.com/media/media_store/image/670abb28408a9a0fc3dd9666e5ca1584.jpeg</item>
+        <item>https://static.baydn.com/media/media_store/image/1e8d675468ab61f4e5bdebd4bcb5f007.jpeg</item>
+        <item>https://static.baydn.com/media/media_store/image/9b2f93cbfa104dae1e67f540ff14a4c2.jpg</item>
+        <item>https://static.baydn.com/media/media_store/image/f5e0631e00a09edbbf2eb21eb71b4d3c.jpeg</item>
+    </string-array>
+
+    <string-array name="img_list_2">
+        <item>https://static.baydn.com/media/media_store/image/c2a734a80fca780f387a3920b20420c0.jpg</item>
+        <item>https://static.baydn.com/media/media_store/image/3691f43b0022854e564154b634acec82.jpeg</item>
+        <item>https://static.baydn.com/media/media_store/image/a36b896e1320ecf69ab448abc3de5707.jpeg</item>
+        <item>https://static.baydn.com/media/media_store/image/4896a1237a241fc0f193e5b669179323.jpeg</item>
+        <item>https://static.baydn.com/media/media_store/image/98376ff1ae61bf4312afca8902639ded.jpeg</item>
+        <item>https://static.baydn.com/media/media_store/image/9f35c73365f7a3869118df0facbb1a20.jpg</item>
+        <item>https://static.baydn.com/media/media_store/image/7e34f58077f03d126007a54defb6205c.jpg</item>
+        <item>https://static.baydn.com/media/media_store/image/7d4a03441f24c381e0c213fb45389911.jpg</item>
+    </string-array>
+
 </resources>

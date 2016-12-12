@@ -1,10 +1,14 @@
 package task.jack.me.shanbay.utils;
 
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -38,13 +42,12 @@ public class FileUtils {
     }
 
     public static String getTextFromInputStream(@NonNull InputStream inputStream) {
-        InputStream is = inputStream;
         InputStreamReader isr = null;
         BufferedReader bufferReader = null;
         try {
             StringBuilder buffer = new StringBuilder();
 
-            isr = new InputStreamReader(is);
+            isr = new InputStreamReader(inputStream);
             bufferReader = new BufferedReader(isr);
             String line;
             while ((line = bufferReader.readLine()) != null) {
@@ -61,7 +64,6 @@ public class FileUtils {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                isr = null;
             }
             if (bufferReader != null) {
                 try {
@@ -69,18 +71,78 @@ public class FileUtils {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                bufferReader = null;
             }
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                is = null;
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
         return null;
     }
 
+    public static void saveBitmap(@NonNull Bitmap bitmap, @NonNull String path, @NonNull CompressFormat format) {
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream(path);
+            bitmap.compress(format, 100, fileOutputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (fileOutputStream != null) {
+                try {
+                    fileOutputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static String getBitmapFullNameFromURL(@NonNull String url) {
+        String[] strings = url.split("/");
+        return strings[strings.length - 1];
+    }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
