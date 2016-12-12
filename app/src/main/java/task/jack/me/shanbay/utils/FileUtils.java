@@ -1,12 +1,10 @@
 package task.jack.me.shanbay.utils;
 
+import android.content.res.AssetManager;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -19,17 +17,37 @@ import static android.content.ContentValues.TAG;
 
 public class FileUtils {
 
-    public static String getTextFromInputStream(InputStream inputStream){
+
+    public static String getTextFromAsset(@NonNull AssetManager assetManager, @NonNull String name) {
+        InputStream inputStream = null;
+        try {
+            inputStream = assetManager.open(name);
+            return FileUtils.getTextFromInputStream(inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static String getTextFromInputStream(@NonNull InputStream inputStream) {
         InputStream is = inputStream;
         InputStreamReader isr = null;
-        BufferedReader buffreader = null;
+        BufferedReader bufferReader = null;
         try {
             StringBuilder buffer = new StringBuilder();
 
             isr = new InputStreamReader(is);
-            buffreader = new BufferedReader(isr);
+            bufferReader = new BufferedReader(isr);
             String line;
-            while ((line = buffreader.readLine()) != null) {
+            while ((line = bufferReader.readLine()) != null) {
                 buffer.append(line);
                 buffer.append('\n');
             }
@@ -45,13 +63,13 @@ public class FileUtils {
                 }
                 isr = null;
             }
-            if (buffreader != null) {
+            if (bufferReader != null) {
                 try {
-                    buffreader.close();
+                    bufferReader.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                buffreader = null;
+                bufferReader = null;
             }
             if (is != null) {
                 try {
