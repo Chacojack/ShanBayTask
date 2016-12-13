@@ -13,6 +13,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
+import task.jack.me.shanbay.adapter.ImageAdapter;
 import task.jack.me.shanbay.model.ImageModel;
 
 /**

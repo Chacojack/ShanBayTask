@@ -1,4 +1,4 @@
-package task.jack.me.shanbay;
+package task.jack.me.shanbay.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import java.util.ArrayList;
 import java.util.List;
 
+import task.jack.me.shanbay.ImageViewHolder;
 import task.jack.me.shanbay.model.ImageModel;
 
 /**
