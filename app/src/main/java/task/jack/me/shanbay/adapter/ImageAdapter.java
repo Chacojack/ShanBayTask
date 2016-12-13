@@ -21,7 +21,9 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageViewHolder> {
 
     @Override
     public ImageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ImageViewHolder(new ImageView(parent.getContext()));
+        ImageView imageView = new ImageView(parent.getContext());
+        imageView.setLayoutParams(new ViewGroup.LayoutParams(360, 640));
+        return new ImageViewHolder(imageView);
     }
 
     @Override

@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -82,9 +82,13 @@ public class FileUtils {
     }
 
     public static void saveBitmap(@NonNull Bitmap bitmap, @NonNull String path, @NonNull CompressFormat format) {
+        File file = new File(path);
+        if (file.exists()) {
+            file.delete();
+        }
         FileOutputStream fileOutputStream = null;
         try {
-            fileOutputStream = new FileOutputStream(path);
+            fileOutputStream = new FileOutputStream(file);
             bitmap.compress(format, 100, fileOutputStream);
         } catch (IOException e) {
             e.printStackTrace();
