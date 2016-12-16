@@ -23,7 +23,19 @@ import task.jack.me.shanbay.utils.BitmapUtils;
 import task.jack.me.shanbay.utils.FileUtils;
 
 /**
- * Created by zjchai on 2016/12/12.
+ * 使用RecyclerView显示图片的ViewHolder，其中包含了加载图片和刷新图片的主要逻辑：
+ *
+ * 正常的加载图片会使用：{@link #loadImage(String)}先从本地加载图片，
+ * {@link #getLoadLocalImageTarget(String)}返回的Target中处理加载结果，如果成功，显示图片，如果失败则从
+ * 网络加载，{@link #getLoadNetworkImageTarget(String)}返回的Target中处理网络加载的结果，如果成功，保存
+ * 图片到本地{@link #saveBitmap(Bitmap, String)}并显示图片。如果失败加载默认图片。其中网络加载图片时的失败
+ * 重试在Picasso中已经有了，会重试3次。
+ *
+ * 强制刷新：{@link #refreshImage(String)}会先从网络加载图片，{@link #getRefreshNetworkTarget(String)}
+ * 得到的Target中处理加载网络图片的结果。如果加载成功，保存图片并显示，如果加载失败会加载本地图片，然后使用
+ * {@link #getRefreshLocalTarget(String)}得到的Target，处理加载本地图片的结果，加载成功，显示图片，加载失败
+ * 显示默认图片，网络加载的重试机制同上是使用Picasso中的。
+ *
  */
 public class ImageViewHolder extends RecyclerView.ViewHolder {
 
