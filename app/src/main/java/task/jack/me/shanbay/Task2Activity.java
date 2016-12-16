@@ -82,7 +82,6 @@ public class Task2Activity extends AppCompatActivity {
 
     @OnClick(R.id.btn_refresh)
     public void onClick() {
-        btnRefresh.setEnabled(false);
         adapter.clear();
         Observable
                 .from(imgUrlArray2)
