@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -37,7 +38,6 @@ public class ImageViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bind(ImageModel image) {
-        long start = System.currentTimeMillis();
         if (target != null) {
             Picasso.with(itemView.getContext()).cancelRequest(target);
             target = null;
@@ -48,7 +48,6 @@ public class ImageViewHolder extends RecyclerView.ViewHolder {
         } else {
             loadImage(image.getUrl());
         }
-        Log.d(TAG, "bind: use time:" + (System.currentTimeMillis() - start));
     }
 
     /**
@@ -82,6 +81,7 @@ public class ImageViewHolder extends RecyclerView.ViewHolder {
                     Picasso.with(itemView.getContext())
                             .load(url)                                 // 从网络加载图片
                             .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+                            .networkPolicy(NetworkPolicy.NO_CACHE, NetworkPolicy.NO_STORE)
                             .resize(360, 640)
                             .into(target = getLoadNetworkImageTarget(url));
                 })
@@ -117,6 +117,7 @@ public class ImageViewHolder extends RecyclerView.ViewHolder {
         Picasso.with(imageView.getContext())
                 .load(url)                                       // 从网络获取图片
                 .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+                .networkPolicy(NetworkPolicy.NO_CACHE, NetworkPolicy.NO_STORE)
                 .resize(360, 640)
                 .into(target = getRefreshNetworkTarget(url));
     }
@@ -136,7 +137,7 @@ public class ImageViewHolder extends RecyclerView.ViewHolder {
                 }).onBitmapFailed(errorDrawable -> {                     // 强制刷新的时候，从网络加载图片失败
                     Log.d(TAG, "getRefreshNetworkTarget: ### fail url:" + url);
                     Picasso.with(itemView.getContext())
-                            .load(getBitmapLocalPath(url))               // 从本地加载图片
+                            .load(getPicassoLocalPath(url))               // 从本地加载图片
                             .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
                             .resize(360, 640)
                             .into(target = getRefreshLocalTarget(url));
